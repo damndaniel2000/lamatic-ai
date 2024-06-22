@@ -28,6 +28,7 @@ const CodeMenu = ({ updateNodeData, nodeData }: CodeMenuProps) => {
       <Textarea
         name="code"
         onChange={handleChange}
+        defaultValue={nodeData.code}
         className="mt-3"
         placeholder="Write Code Here"
       />

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactFlow, {
   Controls,
   Background,
@@ -13,7 +13,6 @@ import ReactFlow, {
 } from "reactflow";
 
 import "reactflow/dist/style.css";
-// import { getGitFiles, uploadFile } from "./utils/api";
 import Sidebar from "./components/Sidebar";
 import NodeWrapper from "./components/NodeWrapper";
 import CodeMenu from "./components/menus/CodeMenu";
@@ -31,9 +30,6 @@ export default function App() {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] =
     useState<ReactFlowInstance | null>(null);
-  // const [savedStates, setSavedStates] = useState<
-  //   { nodes: Node[]; edges: Edge[] }[]
-  // >([]);
 
   const updateNodeData = (id: string, newData: object) => {
     setNodes((prevNodes) =>
@@ -166,43 +162,21 @@ export default function App() {
 
       setNodes((nds) => nds.concat(newNode));
     },
-    [reactFlowInstance]
+    [reactFlowInstance, setNodes]
   );
 
-  // const saveState = () => {
-  //   const currentState = {
-  //     nodes: [...nodes],
-  //     edges: [...edges],
-  //   };
-  //   uploadFile([
-  //     {
-  //       name: "template5.json",
-  //       contents: JSON.stringify(currentState, null, 2),
-  //     },
-  //   ]);
-  //   setSavedStates((prevStates) => [...prevStates, currentState]);
-  //   console.log("State saved:", currentState);
-  // };
+  const handleLoadContent = useCallback(() => {
+    const savedData = localStorage.getItem("savedFlow");
+    if (savedData) {
+      const { structure } = JSON.parse(savedData);
+      setNodes(structure.nodes || []);
+      setEdges(structure.edges || []);
+    }
+  }, [setEdges, setNodes]);
 
-  // const loadState = (index: number) => {
-  //   const selectedState = savedStates[index];
-  //   if (selectedState) {
-  //     setNodes(selectedState.nodes);
-  //     setEdges(selectedState.edges);
-  //     console.log("State loaded:", selectedState);
-  //   } else {
-  //     console.log("Invalid state index");
-  //   }
-  // };
-
-  // const loadStateFromGithub = async () => {
-  //   const getFile = await getGitFiles();
-  //   if (getFile) {
-  //     const data = JSON.parse(getFile);
-  //     setNodes(data.nodes);
-  //     setEdges(data.edges);
-  //   }
-  // };
+  useEffect(() => {
+    handleLoadContent();
+  }, [handleLoadContent]);
 
   return (
     <div className="h-screen w-screen flex justify-end bg-[#f5f3f1]">

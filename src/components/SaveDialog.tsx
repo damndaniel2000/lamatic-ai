@@ -9,13 +9,38 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input"; // Ensure this import path matches your setup
 import { Button } from "./ui/button";
+import { useReactFlow } from "reactflow";
+import { useToast } from "./ui/use-toast";
 
 const SaveDialog: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [contentName, setContentName] = useState("");
 
+  const { toObject } = useReactFlow();
+  const { toast } = useToast();
+
   const handleSaveContent = () => {
-    // Add your save content logic here
+    const flowStructure = toObject();
+    const saveData = {
+      name: contentName,
+      structure: flowStructure,
+    };
+
+    const existingData = localStorage.getItem("savedFlow");
+
+    if (existingData) {
+      toast({
+        variant: "success",
+        title: "Workflow saved",
+      });
+    } else {
+      localStorage.setItem("savedFlow", JSON.stringify(saveData));
+      toast({
+        title: "Workflow saved",
+        variant: "success",
+      });
+    }
+
     setIsOpen(false);
   };
 
