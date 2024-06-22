@@ -26,26 +26,34 @@ const SaveDialog: React.FC = () => {
       structure: flowStructure,
     };
 
-    const existingData = localStorage.getItem("savedFlow");
-
-    if (existingData) {
-      toast({
-        variant: "success",
-        title: "Workflow saved",
-      });
-    } else {
-      localStorage.setItem("savedFlow", JSON.stringify(saveData));
-      toast({
-        title: "Workflow saved",
-        variant: "success",
-      });
-    }
+    localStorage.setItem("savedFlow", JSON.stringify(saveData));
+    toast({
+      variant: "success",
+      title: "Workflow saved",
+    });
 
     setIsOpen(false);
   };
 
+  const handleButtonClick = () => {
+    const existingData = localStorage.getItem("savedFlow");
+
+    if (existingData) {
+      handleSaveContent();
+    } else {
+      setIsOpen(true);
+    }
+  };
+
   return (
     <div>
+      <Button
+        size="sm"
+        onClick={handleButtonClick}
+        className="w-full"
+      >
+        Save
+      </Button>
       <Dialog
         open={isOpen}
         onOpenChange={setIsOpen}
@@ -54,7 +62,7 @@ const SaveDialog: React.FC = () => {
           className="w-full"
           asChild
         >
-          <Button size="sm">Save</Button>
+          <div />
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>

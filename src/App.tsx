@@ -18,9 +18,11 @@ import NodeWrapper from "./components/NodeWrapper";
 import CodeMenu from "./components/menus/CodeMenu";
 import { camelCaseToSentenceCase } from "./utils/utils";
 import { Toaster } from "./components/ui/toaster";
-import { Code, Diamond, File, Image, Webhook } from "lucide-react";
+import { Code, Diamond, Webhook } from "lucide-react";
 import { IconDrive, IconGithub, IconSlack } from "./utils/icons";
-//
+import CustomImageNode from "./components/customNodes/ImageNode";
+import CustomFileNode from "./components/customNodes/FileNode";
+
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
@@ -70,21 +72,17 @@ export default function App() {
         />
       ),
       file: (props: NodeProps) => (
-        <NodeWrapper
-          {...props}
-          icon={<File />}
-          onClick={() => console.log("CLICKED")}
+        <CustomFileNode
           onDelete={onDelete}
           updateNodeData={updateNodeData}
+          {...props}
         />
       ),
       image: (props: NodeProps) => (
-        <NodeWrapper
-          {...props}
-          icon={<Image />}
-          onClick={() => console.log("CLICKED")}
+        <CustomImageNode
           onDelete={onDelete}
           updateNodeData={updateNodeData}
+          {...props}
         />
       ),
       googleDrive: (props: NodeProps) => (
@@ -199,6 +197,11 @@ export default function App() {
             onDrop={onDrop}
             onDragOver={onDragOver}
             nodeTypes={nodeTypes}
+            defaultViewport={{
+              x: 0,
+              y: 0,
+              zoom: 0.8,
+            }}
           >
             <Controls />
 

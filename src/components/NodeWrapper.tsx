@@ -47,7 +47,7 @@ const NodeWrapper: React.FC<ExtendedNodeProps> = ({
         <PopoverTrigger className="w-full">
           <div
             onClick={onClick}
-            className="px-3 py-4 rounded-md bg-white w-[240px]"
+            className="px-3 py-4 rounded-md bg-white w-[260px] shadow-md p-4 border border-gray-300"
           >
             <div className="flex justify-between w-full items-center">
               <div className="flex justify-start items-center">

@@ -16,6 +16,7 @@ import { FileToUpload } from "@/utils/types";
 import { getGitFiles, uploadFile } from "@/utils/api";
 import { Loader2 } from "lucide-react";
 import { useToast } from "./ui/use-toast";
+import { convertToCamelCase } from "@/utils/utils";
 
 const imageWidth = 2000;
 const imageHeight = 750;
@@ -87,7 +88,7 @@ const SaveTemplateDialog: React.FC = () => {
 
       // Create JSON file
       const jsonFile: FileToUpload = {
-        name: templateName + ".json",
+        name: convertToCamelCase(templateName) + ".json",
         content: jsonContent,
       };
 

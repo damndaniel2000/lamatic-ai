@@ -33,7 +33,7 @@ const data: FlowNode[] = [
 
 const Sidebar: React.FC = () => {
   return (
-    <div className="p-4 w-[280px] relative mx-auto bg-card h-full rounded-md overflow-hidden">
+    <div className="p-4 w-[280px] relative mx-auto bg-card h-full rounded-md border border-gray-300 shadow-md overflow-hidden">
       <div className="flex flex-col space-y-4">
         {data.map((section, index) => (
           <Section
