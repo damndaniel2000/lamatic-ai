@@ -29,3 +29,11 @@ export const camelCaseToSentenceCase = (str: string) => {
 export const dataUrlToBase64 = (dataUrl: string): string => {
   return dataUrl.split(",")[1];
 };
+
+export const nameToKeyMap: { [key: string]: string } = {
+  API: "api",
+  Code: "code",
+  Condition: "condition",
+  File: "file",
+  Image: "image",
+};

@@ -35,7 +35,6 @@ const SaveTemplateDialog: React.FC = () => {
     setIsOpen(false);
   };
 
-  // Function to generate an image of the current flow
   const generateImage = useCallback(() => {
     const nodesBounds = getRectOfNodes(getNodes());
     const transform = getTransformForBounds(
@@ -65,16 +64,14 @@ const SaveTemplateDialog: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getNodes]);
 
-  // Function to save the template
   const saveTemplate = async () => {
     setIsSaving(true);
     try {
-      const folderName = templateName;
+      const camelCaseFileName = convertToCamelCase(templateName);
 
       // Get the current flow structure
       const flowStructure = toObject();
 
-      // Create JSON content with template name, description, and flow structure
       const jsonContent = JSON.stringify(
         {
           templateName,
@@ -86,16 +83,15 @@ const SaveTemplateDialog: React.FC = () => {
         2
       );
 
-      // Create JSON file
       const jsonFile: FileToUpload = {
-        name: convertToCamelCase(templateName) + ".json",
+        name: camelCaseFileName + ".json",
         content: jsonContent,
       };
 
       // Array of files to upload
       const filesToUpload = [jsonFile];
 
-      await uploadFile(filesToUpload, folderName);
+      await uploadFile(filesToUpload, camelCaseFileName);
       toast({
         variant: "success",
         title: "Template saved successfully",

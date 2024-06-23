@@ -10,18 +10,19 @@ import ReactFlow, {
   ReactFlowProvider,
   ReactFlowInstance,
   NodeProps,
+  Node,
 } from "reactflow";
 
 import "reactflow/dist/style.css";
 import Sidebar from "./components/Sidebar";
 import NodeWrapper from "./components/NodeWrapper";
 import CodeMenu from "./components/menus/CodeMenu";
-import { camelCaseToSentenceCase } from "./utils/utils";
 import { Toaster } from "./components/ui/toaster";
 import { Code, Diamond, Webhook } from "lucide-react";
-import { IconDrive, IconGithub, IconSlack } from "./utils/icons";
 import CustomImageNode from "./components/customNodes/ImageNode";
 import CustomFileNode from "./components/customNodes/FileNode";
+import CustomConditionNode from "./components/customNodes/ConditionNode";
+import ConditionMenu from "./components/menus/ConditionMenu";
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
@@ -63,11 +64,12 @@ export default function App() {
         />
       ),
       condition: (props: NodeProps) => (
-        <NodeWrapper
+        <CustomConditionNode
           {...props}
           icon={<Diamond />}
           onClick={() => console.log("CLICKED")}
           onDelete={onDelete}
+          popoverContent={ConditionMenu}
           updateNodeData={updateNodeData}
         />
       ),
@@ -85,34 +87,8 @@ export default function App() {
           {...props}
         />
       ),
-      googleDrive: (props: NodeProps) => (
-        <NodeWrapper
-          {...props}
-          icon={<IconDrive />}
-          onClick={() => console.log("CLICKED")}
-          onDelete={onDelete}
-          updateNodeData={updateNodeData}
-        />
-      ),
-      slack: (props: NodeProps) => (
-        <NodeWrapper
-          {...props}
-          icon={<IconSlack />}
-          onClick={() => console.log("CLICKED")}
-          onDelete={onDelete}
-          updateNodeData={updateNodeData}
-        />
-      ),
-      github: (props: NodeProps) => (
-        <NodeWrapper
-          {...props}
-          icon={<IconGithub />}
-          onClick={() => console.log("CLICKED")}
-          onDelete={onDelete}
-          updateNodeData={updateNodeData}
-        />
-      ),
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
@@ -141,11 +117,13 @@ export default function App() {
       event.preventDefault();
       if (!reactFlowInstance) return;
 
-      const type = event.dataTransfer.getData("application/reactflow");
+      const type = event.dataTransfer.getData("application/nodeType");
       // check if the dropped element is valid
       if (typeof type === "undefined" || !type) {
         return;
       }
+
+      const nodeLabel = event.dataTransfer.getData("application/nodeLabel");
 
       const position = reactFlowInstance.screenToFlowPosition({
         x: event.clientX,
@@ -155,7 +133,10 @@ export default function App() {
         id: getId(),
         type,
         position,
-        data: { isNew: true, label: camelCaseToSentenceCase(type) },
+        data: {
+          isNew: true,
+          label: nodeLabel,
+        },
       };
 
       setNodes((nds) => nds.concat(newNode));
@@ -169,6 +150,12 @@ export default function App() {
       const { structure } = JSON.parse(savedData);
       setNodes(structure.nodes || []);
       setEdges(structure.edges || []);
+
+      const maxId = structure.nodes.reduce((max: number, node: Node) => {
+        const nodeId = parseInt(node.id.split("_")[1], 10);
+        return nodeId > max ? nodeId : max;
+      }, 0);
+      id = maxId + 1;
     }
   }, [setEdges, setNodes]);
 

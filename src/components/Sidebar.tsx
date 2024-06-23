@@ -2,12 +2,11 @@
 import React, { ReactNode } from "react";
 import { FlowNode } from "../utils/types";
 import { Button } from "./ui/button";
-import { convertToCamelCase } from "@/utils/utils";
+import { nameToKeyMap } from "@/utils/utils";
 import SaveDialog from "./SaveDialog";
 import SaveTemplateDialog from "./SaveAsTemplateDialog";
 import ImportTemplateDialog from "./ImportDialog";
 import { Code, Diamond, File, Image, Webhook } from "lucide-react";
-import { IconDrive, IconGithub, IconSlack } from "@/utils/icons";
 
 const ICON_SIZE = 16;
 const data: FlowNode[] = [
@@ -19,14 +18,6 @@ const data: FlowNode[] = [
       { name: "Condition", icon: <Diamond size={ICON_SIZE} /> },
       { name: "File", icon: <File size={ICON_SIZE} /> },
       { name: "Image", icon: <Image size={ICON_SIZE} /> },
-    ],
-  },
-  {
-    title: "INTEGRATIONS",
-    items: [
-      { name: "Google Drive", icon: <IconDrive size={ICON_SIZE} /> },
-      { name: "Slack", icon: <IconSlack size={ICON_SIZE} /> },
-      { name: "Github", icon: <IconGithub size={ICON_SIZE} /> },
     ],
   },
 ];
@@ -86,7 +77,9 @@ const Node: React.FC<NodeProps> = ({ name, icon, title }) => {
     event: React.DragEvent<HTMLButtonElement>,
     nodeType: string
   ) => {
-    event.dataTransfer.setData("application/reactflow", nodeType);
+    event.dataTransfer.setData("application/nodeType", nameToKeyMap[nodeType]);
+    event.dataTransfer.setData("application/nodeLabel", nodeType);
+
     event.dataTransfer.effectAllowed = "move";
   };
 
@@ -106,7 +99,7 @@ const Node: React.FC<NodeProps> = ({ name, icon, title }) => {
       variant="outline"
       size="sm"
       onClick={() => console.log(icon)}
-      onDragStart={(e) => onDragStart(e, convertToCamelCase(name))}
+      onDragStart={(e) => onDragStart(e, name)}
       draggable
     >
       <div className="flex items-center w-full">

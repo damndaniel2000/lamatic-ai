@@ -35,9 +35,18 @@ const ImportTemplateDialog: React.FC = () => {
     const fetchTemplates = async () => {
       const files = await getGitFiles();
       if (files) {
-        const parsedTemplates: Template[] = files.map((file) =>
-          JSON.parse(file.content)
-        );
+        const parsedTemplates: Template[] = files
+          .map((file) => {
+            try {
+              const parsedContent = JSON.parse(file.content);
+              return parsedContent;
+            } catch (error) {
+              console.error(`Error parsing file content`, error);
+              return null; // Return null if parsing fails
+            }
+          })
+          .filter((parsedContent) => parsedContent !== null); // Filter out null values
+
         setTemplates(parsedTemplates);
       }
     };

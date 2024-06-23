@@ -36,14 +36,6 @@ const CustomImageNode: React.FC<ExtendedNodeProps> = ({
             imageName: file.name,
             imageSize: file.size,
           });
-          localStorage.setItem(
-            id,
-            JSON.stringify({
-              image: imageDataUrl,
-              imageName: file.name,
-              imageSize: file.size,
-            })
-          );
         };
         reader.readAsDataURL(file);
       }

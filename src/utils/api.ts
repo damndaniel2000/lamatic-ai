@@ -59,6 +59,45 @@ export const getGitFiles = async (): Promise<RepoFiles[] | null> => {
   }
 };
 
+export const checkDirectoryExists = async (
+  folderName: string
+): Promise<boolean> => {
+  try {
+    // Check if the directory already exists
+    const directoryExists = await checkDirectoryExists(folderName);
+
+    // If contents are found, it means the directory already exists
+    if (directoryExists) {
+      throw new Error("Template directory already exists.");
+    }
+    // Attempt to fetch the directory contents
+    const { data: contents } = await octokit.request(
+      "GET /repos/{owner}/{repo}/contents/{path}",
+      {
+        owner: gitPayload.owner,
+        repo: gitPayload.repo,
+        path: folderName,
+      }
+    );
+
+    // If contents are found, it means the directory or file exists
+    if (Array.isArray(contents) && contents.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    // If the error status is 404 (Not Found), directory or file does not exist
+    if (error.status === 404) {
+      return false;
+    } else {
+      console.error("Error:", error);
+      throw error; // Propagate the error for handling in your React component or caller function
+    }
+  }
+};
+
 export const uploadFile = async (files: FileToUpload[], folderName: string) => {
   try {
     const commits = await octokit.repos.listCommits(gitPayload);
