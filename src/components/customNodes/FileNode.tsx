@@ -84,11 +84,24 @@ const CustomFileNode: React.FC<ExtendedNodeProps> = ({
           </div>
         </div>
       ) : (
-        <div className="flex flex-col w-[280px] py-6 border border-dashed border-gray-400 rounded-md hover:border-primary items-center text-center">
-          <div className="flex items-center space-x-4">
-            <Upload className="" />
-            <div className="">Upload a file</div>
+        <div className="flex items-center space-x-2">
+          <div className="flex flex-col w-[280px] py-6 border-2 border-dashed border-gray-400 rounded-md hover:border-primary items-center text-center">
+            <div className="flex items-center space-x-4">
+              <Upload className="" />
+              <div className="">Upload a file</div>
+            </div>
           </div>
+          <Button
+            variant="ghost"
+            className="rounded-full"
+            size="icon"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(id);
+            }}
+          >
+            <Trash2 className="text-primary" />
+          </Button>
         </div>
       )}
       <input

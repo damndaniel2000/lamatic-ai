@@ -12,7 +12,15 @@ import { Button } from "./ui/button";
 import { useReactFlow } from "reactflow";
 import { useToast } from "./ui/use-toast";
 
-const SaveDialog: React.FC = () => {
+type SaveDialogTypes = {
+  workflowName: string;
+  onSaveComplete?: () => void;
+};
+
+const SaveDialog: React.FC<SaveDialogTypes> = ({
+  workflowName,
+  onSaveComplete,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [contentName, setContentName] = useState("");
 
@@ -22,7 +30,7 @@ const SaveDialog: React.FC = () => {
   const handleSaveContent = () => {
     const flowStructure = toObject();
     const saveData = {
-      name: contentName,
+      name: workflowName.length > 0 ? workflowName : contentName,
       structure: flowStructure,
     };
 
@@ -33,6 +41,10 @@ const SaveDialog: React.FC = () => {
     });
 
     setIsOpen(false);
+
+    if (onSaveComplete) {
+      onSaveComplete();
+    }
   };
 
   const handleButtonClick = () => {

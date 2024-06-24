@@ -13,7 +13,7 @@ import { Textarea } from "./ui/textarea";
 import { getRectOfNodes, getTransformForBounds, useReactFlow } from "reactflow";
 import { toPng } from "html-to-image";
 import { FileToUpload } from "@/utils/types";
-import { getGitFiles, uploadFile } from "@/utils/api";
+import { uploadFile } from "@/utils/api";
 import { Loader2 } from "lucide-react";
 import { useToast } from "./ui/use-toast";
 import { convertToCamelCase } from "@/utils/utils";
@@ -110,7 +110,6 @@ const SaveTemplateDialog: React.FC = () => {
 
   // Effect to generate image when the dialog opens
   useEffect(() => {
-    getGitFiles().then((res) => console.log(res));
     if (isOpen) {
       generateImage();
     }
@@ -122,7 +121,7 @@ const SaveTemplateDialog: React.FC = () => {
       onOpenChange={setIsOpen}
     >
       <DialogTrigger>
-        <div className="text-[12px] text-blue-500 cursor-pointer mt-2 ml-1">
+        <div className="text-xs text-blue-500 cursor-pointer mt-2 ml-1">
           Save as template?
         </div>
       </DialogTrigger>

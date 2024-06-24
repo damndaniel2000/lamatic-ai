@@ -118,9 +118,7 @@ const ImportTemplateDialog: React.FC = () => {
               />
               <div className="mt-3">
                 <div className="text-sm font-bold">{template.templateName}</div>
-                <div className="text-[12px]">
-                  {template.templateDescription}
-                </div>
+                <div className="text-xs">{template.templateDescription}</div>
               </div>
             </div>
           ))}

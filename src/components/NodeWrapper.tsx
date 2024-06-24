@@ -7,7 +7,6 @@ import { Trash2 } from "lucide-react";
 
 interface CustomNodeProps {
   icon: ReactNode;
-  onClick: () => void;
   onDelete: (id: string) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   popoverContent?: ComponentType<any>;
@@ -18,7 +17,6 @@ type ExtendedNodeProps = NodeProps & CustomNodeProps;
 
 const NodeWrapper: React.FC<ExtendedNodeProps> = ({
   icon,
-  onClick,
   onDelete,
   popoverContent: PopoverContentComponent,
   updateNodeData,
@@ -26,12 +24,15 @@ const NodeWrapper: React.FC<ExtendedNodeProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const onClose = () => {
+    setIsOpen(false);
+  };
+
   useEffect(() => {
     if (rest.data.isNew) {
       setIsOpen(true);
-      rest.data.isNew = false;
+      delete rest.data.isNew;
     }
-    console.log("rest.data", rest.data);
   }, [rest.data]);
 
   return (
@@ -45,10 +46,7 @@ const NodeWrapper: React.FC<ExtendedNodeProps> = ({
         onOpenChange={(val) => setIsOpen(val)}
       >
         <PopoverTrigger className="w-full">
-          <div
-            onClick={onClick}
-            className="px-3 py-4 rounded-md bg-white w-[260px] shadow-md p-4 border border-gray-300"
-          >
+          <div className="px-3 py-4 rounded-md bg-white w-[260px] shadow-md p-4 border border-gray-300">
             <div className="flex justify-between w-full items-center">
               <div className="flex justify-start items-center">
                 <div className="mr-2">{icon}</div>
@@ -78,6 +76,7 @@ const NodeWrapper: React.FC<ExtendedNodeProps> = ({
                 updateNodeData(rest.id, newData);
               }}
               nodeData={{ ...rest.data }}
+              onClose={onClose}
             />
           ) : (
             "Place content for the popover here."

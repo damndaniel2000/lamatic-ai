@@ -23,6 +23,9 @@ import CustomImageNode from "./components/customNodes/ImageNode";
 import CustomFileNode from "./components/customNodes/FileNode";
 import CustomConditionNode from "./components/customNodes/ConditionNode";
 import ConditionMenu from "./components/menus/ConditionMenu";
+import ApiMenu from "./components/menus/ApiMenu";
+import CustomConditionEdge from "./components/customEdges/CustomConditionEdge";
+import CustomDefaultEdge from "./components/customEdges/CustomDefaultEdge";
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
@@ -33,6 +36,7 @@ export default function App() {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] =
     useState<ReactFlowInstance | null>(null);
+  const [workflowName, setWorkFlowName] = useState<string>("");
 
   const updateNodeData = (id: string, newData: object) => {
     setNodes((prevNodes) =>
@@ -48,7 +52,6 @@ export default function App() {
         <NodeWrapper
           {...props}
           icon={<Code />}
-          onClick={() => console.log("CLICKED")}
           onDelete={onDelete}
           popoverContent={CodeMenu}
           updateNodeData={updateNodeData}
@@ -58,8 +61,8 @@ export default function App() {
         <NodeWrapper
           {...props}
           icon={<Webhook />}
-          onClick={() => console.log("CLICKED")}
           onDelete={onDelete}
+          popoverContent={ApiMenu}
           updateNodeData={updateNodeData}
         />
       ),
@@ -67,7 +70,6 @@ export default function App() {
         <CustomConditionNode
           {...props}
           icon={<Diamond />}
-          onClick={() => console.log("CLICKED")}
           onDelete={onDelete}
           popoverContent={ConditionMenu}
           updateNodeData={updateNodeData}
@@ -92,8 +94,25 @@ export default function App() {
     []
   );
 
+  const edgeTypes = {
+    default: CustomDefaultEdge,
+    condition: CustomConditionEdge,
+  };
+
   const onConnect = useCallback(
-    (params: Edge | Connection) => setEdges((eds) => addEdge(params, eds)),
+    (params: Edge | Connection) => {
+      let nodeParams = { ...params, type: "default" };
+
+      if (nodeParams.sourceHandle) {
+        const condition = params.sourceHandle === "if" ? "if" : "else";
+        nodeParams = {
+          ...params,
+          type: "condition",
+          data: { condition },
+        };
+      }
+      setEdges((eds) => addEdge(nodeParams, eds));
+    },
     [setEdges]
   );
 
@@ -147,9 +166,10 @@ export default function App() {
   const handleLoadContent = useCallback(() => {
     const savedData = localStorage.getItem("savedFlow");
     if (savedData) {
-      const { structure } = JSON.parse(savedData);
+      const { structure, name } = JSON.parse(savedData);
       setNodes(structure.nodes || []);
       setEdges(structure.edges || []);
+      setWorkFlowName(name);
 
       const maxId = structure.nodes.reduce((max: number, node: Node) => {
         const nodeId = parseInt(node.id.split("_")[1], 10);
@@ -168,7 +188,10 @@ export default function App() {
       <Toaster />
       <ReactFlowProvider>
         <div className="absolute z-50 h-[calc(100vh-80px)]  top-10 left-4 ">
-          <Sidebar />
+          <Sidebar
+            onWorkflowSave={handleLoadContent}
+            workflowName={workflowName}
+          />
         </div>
         <div
           className="h-full w-[calc(100vw-300px)]"
@@ -184,6 +207,7 @@ export default function App() {
             onDrop={onDrop}
             onDragOver={onDragOver}
             nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
             defaultViewport={{
               x: 0,
               y: 0,

@@ -22,9 +22,20 @@ const data: FlowNode[] = [
   },
 ];
 
-const Sidebar: React.FC = () => {
+type SidebarComponentTypes = {
+  workflowName: string;
+  onWorkflowSave: () => void;
+};
+
+const Sidebar: React.FC<SidebarComponentTypes> = ({
+  workflowName,
+  onWorkflowSave,
+}) => {
   return (
     <div className="p-4 w-[280px] relative mx-auto bg-card h-full rounded-md border border-gray-300 shadow-md overflow-hidden">
+      {workflowName.length > 0 && (
+        <div className="mb-3 font-semibold">{workflowName}</div>
+      )}
       <div className="flex flex-col space-y-4">
         {data.map((section, index) => (
           <Section
@@ -34,11 +45,13 @@ const Sidebar: React.FC = () => {
           />
         ))}
       </div>
-
       <div className="absolute left-0 bottom-4 w-full px-4">
         <div className="grid grid-cols-2 gap-x-3">
           <ImportTemplateDialog />
-          <SaveDialog />
+          <SaveDialog
+            onSaveComplete={onWorkflowSave}
+            workflowName={workflowName}
+          />
         </div>
         <SaveTemplateDialog />
       </div>
@@ -49,7 +62,7 @@ const Sidebar: React.FC = () => {
 const Section: React.FC<FlowNode> = ({ title, items }) => {
   return (
     <div>
-      <h2 className="text-gray-400 text-[12px] tracking-wider font-semibold mb-2">
+      <h2 className="text-gray-400 text-xs tracking-wider font-semibold mb-2">
         {title}
       </h2>
       <div className="grid grid-cols-2 gap-2">
@@ -95,10 +108,9 @@ const Node: React.FC<NodeProps> = ({ name, icon, title }) => {
   };
   return (
     <Button
-      className={`text-gray-600 text-[12px] ${getButtonColor(title)}`}
+      className={`text-gray-600 text-xs ${getButtonColor(title)}`}
       variant="outline"
       size="sm"
-      onClick={() => console.log(icon)}
       onDragStart={(e) => onDragStart(e, name)}
       draggable
     >

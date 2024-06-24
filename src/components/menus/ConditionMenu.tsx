@@ -67,11 +67,11 @@ const ConditionMenu: React.FC<ConditionFormProps> = ({
   };
 
   return (
-    <div className="p-4">
+    <div className="px-4 py-2">
       <div className="mb-4">
         <label
           htmlFor="variable"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-gray-700 mb-2"
         >
           Variable
         </label>
@@ -100,7 +100,7 @@ const ConditionMenu: React.FC<ConditionFormProps> = ({
       <div className="mb-4">
         <label
           htmlFor="condition"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-gray-700 mb-2"
         >
           Condition
         </label>
@@ -129,7 +129,7 @@ const ConditionMenu: React.FC<ConditionFormProps> = ({
       <div className="mb-4">
         <label
           htmlFor="value"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-gray-700 mb-2"
         >
           Value
         </label>
@@ -155,13 +155,24 @@ const ConditionMenu: React.FC<ConditionFormProps> = ({
         </Select>
       </div>
 
-      <Button
-        onClick={handleSave}
-        disabled={!variable || !condition || !value}
-        className="w-full"
-      >
-        Save
-      </Button>
+      <div className="flex justify-end">
+        <Button
+          className="mr-2 w-20"
+          size="sm"
+          variant="outline"
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
+        <Button
+          className="w-20"
+          size="sm"
+          onClick={handleSave}
+          disabled={!variable || !condition || !value}
+        >
+          Save
+        </Button>
+      </div>
     </div>
   );
 };
